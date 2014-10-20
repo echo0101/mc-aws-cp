@@ -1,4 +1,8 @@
 from flask import Flask
-app = Flask(__name__)
+from flask.ext.sqlalchemy import SQLAlchemy
 
+app = Flask(__name__)
+db = SQLAlchemy(app)
 import minecontrol.views
+import minecontrol.models
+
