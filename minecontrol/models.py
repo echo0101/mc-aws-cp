@@ -1,6 +1,7 @@
 from flask.ext.security import Security, SQLAlchemyUserDatastore, \
-        UserMixin, RoleMixin
+    UserMixin, RoleMixin
 from minecontrol import db, app
+import getpass
 
 roles_users = db.Table('roles_users',
         db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
@@ -25,7 +26,20 @@ user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
 @app.before_first_request
-def prepare_db():
+def dbinit():
+  global user_datastore
+
+  # ensure db created
   db.create_all()
-  user_datastore.create_user(email='me@prenticew.com', password='password')
   db.session.commit()
+
+  admin = user_datastore.get_user('admin')
+
+  if admin is None:
+    admin_password = getpass.getpass('create admin password: ')
+    admin_user = user_datastore.create_user(email='admin', password=admin_password)
+    user_datastore.create_role(name='member', description='Member of this server')
+    admin_group = user_datastore.create_role(name='admin', \
+        description='Administrator of this server')
+    user_datastore = user_datastore.add_role_to_user(admin_user, admin_group)
+    db.session.commit()
