@@ -7,7 +7,7 @@ Minecraft AWS Control Panel
 
 Install venv (http://virtualenv.readthedocs.org/en/latest/virtualenv.html#installation)
 ```
- $ pip install venv
+ $ pip install virtualenv 
 ```
 
 Create venv and Install Required Packages
