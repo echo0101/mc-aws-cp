@@ -2,6 +2,7 @@ import itertools
 from werkzeug.contrib.cache import SimpleCache
 import boto.ec2
 from minecontrol import app
+from paramiko.client import SSHClient
 
 cache = SimpleCache()
 conn = None
@@ -54,15 +55,28 @@ def get_instance_list(force_update=False):
 
   return retval
 
+def stop_instance(instance):
+  try:
+    stop_script_location = instance.tags['stop_script']
+  except KeyError:
+    stop_script_location = '~/shutdown.sh' 
+  client = SSHClient()
+  client.load_system_host_keys()
+  client.connect(instance.ip_address, username="ubuntu")
+  stdin, stdout, stderr = client.exec_command(stop_script_location + 
+      " " + app.config["API_KEY"] + " " + app.config["MY_URL"] + "/api/v1/stats")
+  client.close()
+
 # warning: action is not validated for valid state transition
-def action(iid, action):
+def action(instance, action):
+  iid = instance.id
   if "Instance:"+iid in map(str,get_instance_list()):
     if action == ACTION_START:
       conn.start_instances([iid])
       return True
     elif action == ACTION_STOP:
-      #TODO: use server stop script instead
-      conn.stop_instances([iid])
+      stop_instance(instance)
+      #conn.stop_instances([iid])
       return True
   return False
   

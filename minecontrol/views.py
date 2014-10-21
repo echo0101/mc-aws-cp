@@ -44,7 +44,7 @@ def manage_instance(iid):
   instance = aws.get_instance(iid)
   if instance:
     if action in aws.STATE_TRANSITIONS[instance.state]:
-      if aws.action(iid, action):
+      if aws.action(instance, action):
         return redirect(url_for('manage', result="Submitted command: " + action, update=True, iid=iid))
     else:
       return redirect(url_for('manage', result="State change not allowed.", update=True, iid=iid))
