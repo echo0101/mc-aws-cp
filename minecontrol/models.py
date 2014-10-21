@@ -8,18 +8,32 @@ roles_users = db.Table('roles_users',
         db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 class Role(db.Model, RoleMixin):
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(80), unique=True)
-    description = db.Column(db.String(255))
+  id = db.Column(db.Integer(), primary_key=True)
+  name = db.Column(db.String(80), unique=True)
+  description = db.Column(db.String(255))
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(255), unique=True)
-    password = db.Column(db.String(255))
-    active = db.Column(db.Boolean())
-    confirmed_at = db.Column(db.DateTime())
-    roles = db.relationship('Role', secondary=roles_users,
+  id = db.Column(db.Integer, primary_key=True)
+  email = db.Column(db.String(255), unique=True)
+  password = db.Column(db.String(255))
+  active = db.Column(db.Boolean())
+  confirmed_at = db.Column(db.DateTime())
+  minecraft_account_uuid = db.Column(db.String(32))
+  minecraft_username = db.Column(db.String(255))
+  roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
+
+class UsageRecord(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  timestamp = db.Column(db.DateTime)
+  minecraft_account_uuid = db.Column(db.String(32))
+  ticks_played = db.Column(db.Integer)
+
+class BillRecord(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  startDate = db.Column(db.DateTime)
+  endDate = db.Column(db.DateTime)
+  costCents = db.Column(db.Integer)
 
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
