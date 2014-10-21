@@ -28,6 +28,7 @@
           <th>Instance ID</th>
           <th>Label</th>
           <th>State</th>
+          <th>IP</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -36,6 +37,7 @@
         <td>{{ instance.iid }}</td>
         <td>{{ instance.label }}</td>
         <td>{{ instance.state }}</td>
+        <td>{{ instance.ip }} </td>
         <td>
           {% for action in instance.actions %}
           <button id="{{instance.iid}}.{{action}}" type="button" class="btn btn-default action-button">{{action}}</button>

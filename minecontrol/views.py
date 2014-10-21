@@ -24,6 +24,7 @@ def manage():
         "iid": i.id,
         "label": i.tags['Name'],
         "state": i.state,
+        "ip": i.ip_address,
         "highlight": i.id == request.args.get('iid'),
         "actions": aws.STATE_TRANSITIONS[i.state]
         })
