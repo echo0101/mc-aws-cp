@@ -2,7 +2,7 @@ import datetime
 import json
 
 from flask.ext.security import login_required, roles_accepted
-from flask import request, redirect, url_for, render_template
+from flask import request, redirect, url_for, render_template, flash
 
 from minecontrol import app, db
 from models import UsageRecord
@@ -16,7 +16,9 @@ def index():
 @app.route('/manage')
 @roles_accepted('member','admin')
 def manage():
-  force_update = request.args.get('update') is True
+  if request.args.get('result'):
+    flash(request.args.get('result'))
+  force_update = request.args.get('update') == "True"
   instances = aws.get_instance_list(force_update)
   inst_summary = [] 
   for i in instances:
