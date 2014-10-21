@@ -1,6 +1,8 @@
 # venv environment
 .env/
 
+# ignore local config file
+my.cfg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
