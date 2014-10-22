@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Manage Users</h1>
+{% with messages = get_flashed_messages() %}
+{% for message in messages %}
+<div class="alert alert-info" role="alert">{{ message }}</div>
+{% endfor %}
+{% endwith %}
+
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>User ID</th>
+      <th>Email</th>
+      <th>Active</th>
+      <th>Minecraft UUID</th>
+      <th>Minecraft Username</th>
+      <th>Roles</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  {% for user in users %}
+  <tr>
+    <td>{{ user.id }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.active }}</td>
+    <td>{{ user.minecraft_account_uuid }}</td>
+    <td>{{ user.minecraft_username }}</td>
+    <td>{{ user.roles|map(attribute='name')|join(', ') }}</td>
+    <td> <a href="{{ url_for('manage_user', uid=user.id) }}" class="btn btn-default">Edit</a></td>
+  </tr>
+  {% endfor %}
+</table>
+<a href="{{ url_for('add_user') }}" class="btn btn-default">Add</a>
+{% endblock %}

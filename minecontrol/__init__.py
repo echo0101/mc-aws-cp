@@ -1,9 +1,12 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CsrfProtect
+
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
 
+CsrfProtect(app)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['API_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/minecontrol.db'

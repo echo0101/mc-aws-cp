@@ -7,7 +7,7 @@ from flask import request, redirect, url_for, render_template, flash
 from itsdangerous import JSONWebSignatureSerializer
 
 from minecontrol import app, db
-from models import UsageRecord
+from models import UsageRecord, User
 import aws
 
 s = None
@@ -49,6 +49,22 @@ def manage_instance(iid):
     else:
       return redirect(url_for('manage', result="State change not allowed.", update=True, iid=iid))
   return "Action failed."
+
+@app.route('/users')
+@roles_accepted('admin')
+def manage_users():
+  users = db.session.query(User).all()
+  return render_template("users.html", users=users)
+
+@app.route('/users/<uid>', methods=['GET','POST'])
+@roles_accepted('admin')
+def manage_user(uid):
+  pass
+
+@app.route('/users/add', methods=['GET','POST'])
+@roles_accepted('admin')
+def add_user():
+  pass
 
 @app.route('/api/v1/stats', methods=['POST'])
 def api_stats():

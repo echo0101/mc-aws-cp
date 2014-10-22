@@ -50,17 +50,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script>
-      $(".action-button").click(function (event){
-        data = event.currentTarget.id.split('.');
-        $('<form action="/manage/' + data[0] + '" method="POST">' +
-          '<input type="hidden" name="action" value="' + data[1] + '">' + 
-          '</form>').submit();
-      });
-      $("#reload-button").click(function (event){
-        window.location.href = "{{ url_for('manage', update=True) }}";
-      });
-      
-    </script>
+    {% block after_scripts %}{% endblock %}
   </body>
 </html>

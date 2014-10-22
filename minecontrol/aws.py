@@ -1,8 +1,9 @@
 import itertools
 from werkzeug.contrib.cache import SimpleCache
 import boto.ec2
-from minecontrol import app
 from paramiko.client import SSHClient
+
+from minecontrol import app
 
 cache = SimpleCache()
 conn = None

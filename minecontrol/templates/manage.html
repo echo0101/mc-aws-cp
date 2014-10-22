@@ -34,3 +34,17 @@
   {% endfor %}
 </table>
 {% endblock %}
+{% block after_scripts %}
+<script>
+  $(".action-button").click(function (event){
+    data = event.currentTarget.id.split('.');
+    $('<form action="/manage/' + data[0] + '" method="POST">' +
+      '<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />' +
+      '<input type="hidden" name="action" value="' + data[1] + '">' + 
+      '</form>').submit();
+  });
+  $("#reload-button").click(function (event){
+    window.location.href = "{{ url_for('manage', update=True) }}";
+  });
+</script>
+{% endblock %}

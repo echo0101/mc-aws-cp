@@ -16,7 +16,6 @@ class User(db.Model, UserMixin):
   email = db.Column(db.String(255), unique=True)
   password = db.Column(db.String(255))
   active = db.Column(db.Boolean())
-  confirmed_at = db.Column(db.DateTime())
   minecraft_account_uuid = db.Column(db.String(32))
   minecraft_username = db.Column(db.String(255))
   roles = db.relationship('Role', secondary=roles_users,
