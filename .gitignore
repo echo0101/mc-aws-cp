@@ -4,6 +4,10 @@
 # ignore local config file
 my.cfg
 
+# vim swaps
+*.swp
+*.swo
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
