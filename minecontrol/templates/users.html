@@ -27,7 +27,10 @@
     <td>{{ user.minecraft_account_uuid }}</td>
     <td>{{ user.minecraft_username }}</td>
     <td>{{ user.roles|map(attribute='name')|join(', ') }}</td>
-    <td> <a href="{{ url_for('manage_user', uid=user.id) }}" class="btn btn-default">Edit</a></td>
+    <td> 
+      <a href="{{ url_for('manage_user', uid=user.id) }}" class="btn btn-default">Edit</a>
+      <a href="{{ url_for('reset_password', uid=user.id) }}" class="btn btn-default">Reset Password</a>
+    </td>
   </tr>
   {% endfor %}
 </table>

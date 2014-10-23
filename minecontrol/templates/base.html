@@ -36,7 +36,19 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/logout">Logout</a></li>
+            {% if current_user.has_role("member") or current_user.has_role("admin") %}
+            <li><a href="{{url_for('manage')}}">Manage</a></li>
+            {% endif %}
+            {% if current_user.has_role("admin") %}
+            <li><a href="{{url_for('manage_users')}}">Users</a></li>
+            {% endif %}
+            <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hello, {{current_user}} <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="{{url_for('security.change_password') }}">Change Password</a></li>
+              <li><a href="{{url_for('security.logout')}}">Logout</a></li>
+            </ul>
+            </li>
           </ul>
         </div>
       </div>

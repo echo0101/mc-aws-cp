@@ -19,19 +19,21 @@
       <th>Actions</th>
     </tr>
   </thead>
-  {% for instance in instances %}
-  <tr {% if instance.highlight %}class="info"{% endif %}>
-    <td>{{ instance.iid }}</td>
-    <td>{{ instance.label }}</td>
-    <td>{{ instance.state }}</td>
-    <td>{{ instance.ip }} </td>
-    <td>
-      {% for action in instance.actions %}
-      <button id="{{instance.iid}}.{{action}}" type="button" class="btn btn-default action-button">{{action}}</button>
-      {% endfor %}
-    </td>
-  </tr>
-  {% endfor %}
+  <tbody>
+    {% for instance in instances %}
+    <tr {% if instance.highlight %}class="info"{% endif %}>
+      <td>{{ instance.iid }}</td>
+      <td>{{ instance.label }}</td>
+      <td>{{ instance.state }}</td>
+      <td>{{ instance.ip }} </td>
+      <td>
+        {% for action in instance.actions %}
+        <button id="{{instance.iid}}.{{action}}" type="button" class="btn btn-default action-button">{{action}}</button>
+        {% endfor %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
 {% endblock %}
 {% block after_scripts %}
