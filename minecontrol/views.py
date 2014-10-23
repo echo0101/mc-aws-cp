@@ -161,7 +161,37 @@ def add_user():
 @login_required
 @roles_accepted('audit','admin')
 def audit_commands():
-  return render_template("audit/commands.html",commands=db.session.query(CommandRecord).all())
+  return render_template("commands.html",commands=db.session.query(CommandRecord).all())
+
+@app.route('/manage/usage')
+@login_required
+@roles_accepted('member','admin')
+def audit_usage():
+  pass
+
+@app.route('/bills')
+@login_required
+@roles_accopted('audit','admin')
+def bills():
+  return render_template("bills.html", bills=db.session.query(BillRecord).all())
+
+@app.route('/bills/create')
+@login_required
+@roles_accepted('admin')
+def add_bill():
+  pass
+
+@app.route('/bills/<id>', methods=['GET','POST'])
+@login_required
+@roles_accepted('admin')
+def edit_bill():
+  pass
+
+@app.route('/bills/<id>/delete', methods=['GET','POST'])
+@login_required
+@roles_accepted('admin')
+def delete_bill():
+  pass
 
 @app.route('/api/v1/stats', methods=['POST'])
 def api_stats():
