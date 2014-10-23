@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Manage Users</h1>
-{% with messages = get_flashed_messages() %}
-{% for message in messages %}
-<div class="alert alert-info" role="alert">{{ message }}</div>
-{% endfor %}
-{% endwith %}
 
 <table class="table table-bordered table-striped">
   <thead>

@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>{{ action }} User</h1>
-{% with messages = get_flashed_messages() %}
-{% for message in messages %}
-<div class="alert alert-info" role="alert">{{ message }}</div>
-{% endfor %}
-{% endwith %}
 
 <form method="POST" role="form">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>

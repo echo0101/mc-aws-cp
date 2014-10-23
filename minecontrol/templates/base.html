@@ -12,7 +12,7 @@
     <style>
     /* Move down content because we have a fixed navbar that is 50px tall */
     body {
-      padding-top: 50px;
+      padding-top: 60px;
     }
     </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -55,6 +55,11 @@
     </div>
 
     <div class="container-fluid">
+      {% with messages = get_flashed_messages() %}
+      {% for message in messages %}
+      <div class="alert alert-info" role="alert">{{ message }}</div>
+      {% endfor %}
+      {% endwith %}
       {% block content %}{% endblock %}
     </div>
 
