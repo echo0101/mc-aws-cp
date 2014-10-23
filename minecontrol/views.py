@@ -130,7 +130,7 @@ def add_user():
 
   return render_template("user.html", form=form, action="Add") 
 
-@app.route('/audit/commands')
+@app.route('/manage/audit')
 @login_required
 @roles_accepted('audit','admin')
 def audit_commands():
