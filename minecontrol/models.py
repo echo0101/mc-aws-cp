@@ -31,13 +31,13 @@ class User(db.Model, UserMixin):
 
 class CommandRecord(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
+  timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
   action = db.Column(db.Enum(ACTION_START, ACTION_STOP))
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class UsageRecord(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
+  timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
   minecraft_account_uuid = db.Column(db.String(32))
   ticks_played = db.Column(db.Integer)
 
