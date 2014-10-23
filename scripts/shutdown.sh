@@ -1,11 +1,12 @@
 #!/bin/bash
 # ./shutdown.sh [api key] [stats api url]
 
+RCON_PASSWORD='password'
+
 # stop the server
-sudo service cloudcraft stop
+python mcrcon_cli.py -H localhost -p 25575 -P $RCON_PASSWORD -c "stop"
 
 # send stats back
-cd vanilla-cloudcraft
 ptyhon upload_stats.py $1 $2
 
 # shutdown

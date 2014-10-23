@@ -4,7 +4,7 @@ import urllib,httplib
 import json
 from itsdangerous import JSONWebSignatureSerializer
 
-STATS_LOCATION = "cloudcraft/stats"
+STATS_LOCATION = "/srv/cloudcraft/stats"
 
 # parms
 # 1- api_key
