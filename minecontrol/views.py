@@ -12,6 +12,7 @@ from wtforms.ext.sqlalchemy.orm import model_form
 from wtforms import Form
 
 from minecontrol import app, db, user_datastore
+from forms import ConfirmForm
 from models import * 
 from util import *
 import mojang
@@ -74,17 +75,16 @@ def manage_users():
 @roles_accepted('admin')
 def reset_password(uid):
   model = user_datastore.get_user(uid) or abort(404)
-  if request.method == 'POST':
-    if 'confirm' in request.form and request.form['confirm']:
-      password = random_pass()
-      model.password = encrypt_password(password)
-      db.session.add(model)
-      db.session.commit()
-      flash("Password reset for %s to %s" % (model.email, password))
-      return redirect(url_for("manage_users"))
-    else:
-      flash("You must check the box")
-  return render_template("confirm.html", prompt="You are about to reset the password for %s" % model.email)
+  form = ConfirmForm(request.form)
+  if request.method == 'POST' and form.validate():
+    password = random_pass()
+    model.password = encrypt_password(password)
+    db.session.add(model)
+    db.session.commit()
+    flash("Password reset for %s to %s" % (model.email, password))
+    return redirect(url_for("manage_users"))
+  return render_template("confirm.html", form=form, back="manage_users", 
+      prompt="You are about to reset the password for %s" % model.email)
 
 @app.route('/users/<uid>', methods=['GET','POST'])
 @login_required
@@ -119,7 +119,6 @@ def manage_user(uid):
       db.session.commit()
 
       return redirect(url_for("manage_users"))
-
   return render_template("user.html", form=form, action="Edit")
 
 @app.route('/users/add', methods=['GET','POST'])
@@ -171,27 +170,54 @@ def audit_usage():
 
 @app.route('/bills')
 @login_required
-@roles_accopted('audit','admin')
+@roles_accepted('audit','admin')
 def bills():
   return render_template("bills.html", bills=db.session.query(BillRecord).all())
 
-@app.route('/bills/create')
+def _process_bill(bid=None):
+  bill = BillRecord() if not bid else db.session.query(BillRecord).get(bid) or abort(404)
+
+  billForm = model_form(BillRecord, base_class=Form, db_session=db.session)
+  form = billForm(request.form, bill)
+
+  if request.method == 'POST' and form.validate():
+    bill.endDate = form.data['endDate']
+    bill.costCents = form.data['costCents']
+    bill.lastRecords = form.data['lastRecords']
+    bill.notes = form.data['notes']
+
+    flash("Bill added." if not bid else "Bill updated.")
+    db.session.add(bill)
+    db.session.commit()
+
+    return redirect(url_for("bills"))
+  return render_template("bill.html", form=form, action="Add" if not bid else "Edit", bid=bid)
+
+@app.route('/bills/create', methods=['GET','POST'])
 @login_required
 @roles_accepted('admin')
 def add_bill():
-  pass
+  return _process_bill()
 
-@app.route('/bills/<id>', methods=['GET','POST'])
+@app.route('/bills/<bid>', methods=['GET','POST'])
 @login_required
 @roles_accepted('admin')
-def edit_bill():
-  pass
+def edit_bill(bid):
+  return _process_bill(bid)
 
-@app.route('/bills/<id>/delete', methods=['GET','POST'])
+@app.route('/bills/<bid>/delete', methods=['GET','POST'])
 @login_required
 @roles_accepted('admin')
-def delete_bill():
-  pass
+def delete_bill(bid):
+  bill = db.session.query(BillRecord).get(bid) or abort(404)
+  form = ConfirmForm(request.form)
+  if request.method == 'POST' and form.validate():
+    db.session.delete(bill)
+    db.session.commit()
+    flash("Bill record #%s has been deleted." % bid)
+    return redirect(url_for("bills"))
+  return render_template("confirm.html", form=form, back="bills",
+      prompt="You are about to remove a bill record for %s." % str(bill.endDate)) 
 
 @app.route('/api/v1/stats', methods=['POST'])
 def api_stats():

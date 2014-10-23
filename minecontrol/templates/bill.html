@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ action }} Bill</h1>
+
+{% if form.errors %}
+<div class="alert alert-danger" role="alert">
+  <ul class="errors">
+    {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+    {% for error in field_errors %}
+    <li>{{ form[field_name].label }}: {{ error }}</li>
+    {% endfor %}
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+<form method="POST" role="form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+  <div class="form-group{% if form.endDate.errors %} has-error{% endif %}">{{ form.endDate.label }} {{ form.endDate(class_="form-control") }}</div>
+  <div class="form-group{% if form.costCents.errors %} has-error{% endif %}">{{ form.costCents.label }} {{ form.costCents(class_="form-control") }}</div>
+  <div class="form-group{% if form.lastRecords.errors %} has-error{% endif %}">{{ form.lastRecords.label }} {{ form.lastRecords(class_="form-control") }}</div>
+  <div class="form-group{% if form.notes.errors %} has-error{% endif %}">{{ form.notes.label }} {{ form.notes(class_="form-control") }}</div>
+  <input type="submit" value="Submit" class="btn btn-primary">
+  <a href="{{ url_for("bills") }}" class="btn btn-default">Cancel</a>
+  {% if bid %}<a href="{{ url_for("delete_bill", bid=bid) }}" class="btn btn-danger pull-right">Delete</a>{% endif %}
+</form>
+  
+{% endblock %}

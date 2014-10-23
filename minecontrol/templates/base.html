@@ -39,6 +39,9 @@
             {% if current_user.has_role("member") or current_user.has_role("admin") %}
             <li><a href="{{url_for('manage')}}">Manage</a></li>
             {% endif %}
+            {% if current_user.has_role("admin") or current_user.has_role("audit") %}
+            <li><a href="{{url_for('bills')}}">Bills</a></li>
+            {% endif %}
             {% if current_user.has_role("admin") %}
             <li><a href="{{url_for('manage_users')}}">Users</a></li>
             {% endif %}

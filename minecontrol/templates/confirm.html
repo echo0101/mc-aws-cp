@@ -4,12 +4,15 @@
 {{ prompt }}
 <form method="POST" role="form">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-  <div class="checkbox">
-    <label>
-      <input name="confirm" id="confirm" type="checkbox"> Yes. 
+  <div class="radio{% if form.confirm.errors %} has-error{% endif %}">
+    <label class="checkbox">
+      {{ form.confirm }} {{ form.confirm.label }}
     </label>
+      {% if form.confirm.errors %}
+      {% for error in form.confirm.errors %}<span class="help-block">{{ error }}</span>{% endfor %}
+      {% endif %}
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
-  <a href="{{ url_for("manage_users") }}" class="btn btn-default">Cancel</a>
+  <a href="{{ url_for(back) }}" class="btn btn-default">Cancel</a>
 </form> 
 {% endblock %}

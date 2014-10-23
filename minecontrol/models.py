@@ -36,21 +36,18 @@ class CommandRecord(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class UsageRecord(db.Model):
+  __tablename__ = 'usagerecord'
   id = db.Column(db.Integer, primary_key=True)
   timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
   minecraft_account_uuid = db.Column(db.String(32))
   ticks_played = db.Column(db.Integer)
-  bill_id = db.Column(db.Integer, db.ForeignKey('bill.id'))
+  billrecord_id = db.Column(db.Integer, db.ForeignKey('bill.id'))
 
 class BillRecord(db.Model):
+  __tablename__ = 'bill'
   id = db.Column(db.Integer, primary_key=True)
-  startDate = db.Column(db.DateTime)
-  endDate = db.Column(db.DateTime)
+  endDate = db.Column(db.DateTime, default=datetime.datetime.utcnow)
   costCents = db.Column(db.Integer)
   lastRecords = db.relationship('UsageRecord', backref='bill')
-
-
-
-
-      
+  notes = db.Column(db.Text)
 
