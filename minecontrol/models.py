@@ -1,7 +1,7 @@
 from flask.ext.security import Security, SQLAlchemyUserDatastore, \
     UserMixin, RoleMixin
 from minecontrol import db
-from aws import ACTION_START, ACTION_STOP
+from aws import ACTION_START, ACTION_STOP, ACTION_STOP_CANCEL
 import datetime
 
 roles_users = db.Table('roles_users',
@@ -32,7 +32,8 @@ class User(db.Model, UserMixin):
 class CommandRecord(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-  action = db.Column(db.Enum(ACTION_START, ACTION_STOP))
+  action = db.Column(db.Enum(ACTION_START, ACTION_STOP, ACTION_STOP_CANCEL))
+
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class UsageRecord(db.Model):

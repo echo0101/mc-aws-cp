@@ -36,14 +36,19 @@ def manage():
   instances = aws.get_instance_list(force_update)
   inst_summary = [] 
   for i in instances:
+    state = i.state
+    allowed_actions = aws.STATE_TRANSITIONS[i.state]
+    if aws.EC2_TAG_SHUTDOWN_JOB in i.tags:
+      allowed_actions.append(aws.ACTION_STOP_CANCEL)
+      state += " (stop scheduled)"
     inst_summary.append({
         "iid": i.id,
         "label": i.tags['Name'],
-        "state": i.state,
+        "state": state,
         "ip": i.ip_address,
-        "uptime": aws.get_time_running(i) if i.state != "stopped" else None,
+        "uptime": aws.get_time_since_launch(i) if i.state != "stopped" else None,
         "highlight": i.id == request.args.get('iid'),
-        "actions": aws.STATE_TRANSITIONS[i.state]
+        "actions": allowed_actions 
         })
 
   return render_template("manage.html", instances=inst_summary) 

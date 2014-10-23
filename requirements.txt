@@ -24,5 +24,6 @@ passlib==1.6.2
 pycrypto==2.6.1
 python-dateutil==2.2
 pytz==2014.7
+redis==2.10.3
 six==1.8.0
 wsgiref==0.1.2

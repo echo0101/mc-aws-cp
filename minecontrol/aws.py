@@ -4,14 +4,18 @@ import boto.ec2
 from paramiko.client import SSHClient
 import datetime
 import dateutil.parser
+from celery.task.control import revoke
 
 from minecontrol import app, celery
 
 cache = SimpleCache()
 conn = None
 
+EC2_TAG_SHUTDOWN_JOB="shutdownJob"
+
 ACTION_START="Start"
 ACTION_STOP="Stop"
+ACTION_STOP_CANCEL="Cancel Shutdown"
 
 STATE_TRANSITIONS = {
     "pending": [],
@@ -71,8 +75,8 @@ def stop_instance(instance):
   client.close()
 
 def get_time_since_launch(instance):
-  time_running = datetime.datetime.now - dateutil.parser.parse(instance.launch_time)
-  _minutes, seconds = divmod(time_running.days * 86400 + c.seconds, 60)
+  time_running = datetime.datetime.utcnow() - dateutil.parser.parse(instance.launch_time).replace(tzinfo=None)
+  _minutes, seconds = divmod(time_running.days * 86400 + time_running.seconds, 60)
   hours, minutes = divmod(_minutes, 60)
   return hours, minutes, seconds
 
@@ -84,11 +88,25 @@ def action(instance, action):
       conn.start_instances([iid])
       return True
     elif action == ACTION_STOP:
-      #conn.stop_instances([iid])
+      hours, minutes, seconds = get_time_since_launch(instance)
+      time_to_shutdown = 50 - minutes # shutdown 10 minutes before the hours is up
+      if time_to_shutdown < 0:
+        time_to_shutdown = 0
+      res = do_stop.apply_async((instance),countdown=time_to_shutdown*60) # minutes to seconds
+      instance.add_tag(EC2_TAG_SHUTDOWN_JOB, res.id)
       return True
+    elif action == ACTION_STOP_CANCEL: 
+      try:
+        task_id = instance.tags[EC2_TAG_SHUTDOWN_JOB]
+      except KeyError:
+        return False
+      revoke(task_id, terminate=True)
+      return True
+
   return False
 
 @celery.task
 def do_stop(instance):
   stop_instance(instance)
+  instance.remove_tag(EC2_TAG_SHUTDOWN_JOB)
   
