@@ -14,6 +14,7 @@ from wtforms import Form
 from minecontrol import app, db, user_datastore
 from models import * 
 from util import *
+import mojang
 
 import aws
 
@@ -94,16 +95,30 @@ def manage_user(uid):
   form = userForm(request.form, model)
 
   if request.method == 'POST' and form.validate():
-    model.email = form.data['email']
-    model.active = form.data['active']
-    model.minecraft_username = form.data['minecraft_username']
-    model.roles = form.data['roles']
+    valid = True
 
-    flash("Updated user.")
-    db.session.add(model)
-    db.session.commit()
+    # only attempt to update uuid if username has changed and is not empty
+    if model.minecraft_username != form.data['minecraft_username'] and \
+      form.data['minecraft_username'] != "":
+        uuid = mojang.get_uuid(form.data['minecraft_username'])
+        if uuid == None:
+          flash("Minecraft user not found.")
+          valid = False
+        else:
+          model.minecraft_account_uuid = uuid 
 
-    return redirect(url_for("manage_users"))
+    # continue if form is still valid
+    if valid:
+      model.email = form.data['email']
+      model.active = form.data['active']
+      model.roles = form.data['roles']
+      model.minecraft_username = form.data['minecraft_username']
+
+      flash("Updated user.")
+      db.session.add(model)
+      db.session.commit()
+
+      return redirect(url_for("manage_users"))
 
   return render_template("user.html", form=form, action="Edit")
 
@@ -116,17 +131,29 @@ def add_user():
   form = userForm(request.form, model)
 
   if request.method == 'POST' and form.validate():
-    password = random_pass()
-    user_datastore.create_user(
-        email=form.data['email'],
-        password=password,
-        active=form.data['active'],
-        minecraft_account_uuid=None,
-        minecraft_username=None,
-        roles=form.data['roles'])
-    db.session.commit()
-    flash("Created user. Temporary password is %s"%password)
-    return redirect(url_for("manage_users"))
+    valid = True
+    uuid = None 
+
+    # if username was provided, make sure it is valid
+    if form.data['minecraft_username'] != "":
+      uuid = mojang.get_uuid(form.data['minecraft_username'])
+      if uuid == None:
+        flash("Minecraft user not found.")
+        valid = False
+
+    # only continue if form is still valid
+    if valid:
+      password = random_pass()
+      user_datastore.create_user(
+          email=form.data['email'],
+          password=password,
+          active=form.data['active'],
+          minecraft_account_uuid=uuid,
+          minecraft_username=form.data['minecraft_username'],
+          roles=form.data['roles'])
+      db.session.commit()
+      flash("Created user. Temporary password is %s"%password)
+      return redirect(url_for("manage_users"))
 
   return render_template("user.html", form=form, action="Add") 
 
