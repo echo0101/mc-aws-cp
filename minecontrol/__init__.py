@@ -30,6 +30,9 @@ app.config['MY_URL'] = 'http://localhost'
 app.config['CELERY_BROKER_URL']='redis://localhost:6379'
 app.config['CELERY_RESULT_BACKEND']='redis://localhost:6379'
 
+# Setup Celery
+celery = make_celery(app)
+
 app.config['SECURITY_CHANGEABLE'] = True
 app.config['SECURITY_SEND_PASSWORD_CHANGE_EMAIL'] = False
 # enable hashed passwords
@@ -50,9 +53,6 @@ import minecontrol.models
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, models.User, models.Role)
 security = Security(app, user_datastore)
-
-# Setup Celery
-celery = make_celery(app)
 
 @app.before_first_request
 def dbinit():

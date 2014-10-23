@@ -11,6 +11,7 @@
       <th>Label</th>
       <th>State</th>
       <th>IP</th>
+      <th>Info</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -21,6 +22,11 @@
       <td>{{ instance.label }}</td>
       <td>{{ instance.state }}</td>
       <td>{{ instance.ip }} </td>
+      <td>
+        {% if instance.uptime %}
+        Uptime: {{ instance.uptime[0] }} hour(s) and {{ instance.uptime[1] }} minute(s)
+        {% endif %}
+      </td>
       <td>
         {% for action in instance.actions %}
         <button id="{{instance.iid}}.{{action}}" type="button" class="btn btn-default action-button">{{action}}</button>

@@ -2,8 +2,10 @@ import itertools
 from werkzeug.contrib.cache import SimpleCache
 import boto.ec2
 from paramiko.client import SSHClient
+import datetime
+import dateutil.parser
 
-from minecontrol import app
+from minecontrol import app, celery
 
 cache = SimpleCache()
 conn = None
@@ -68,6 +70,12 @@ def stop_instance(instance):
       " " + app.config["API_KEY"] + " " + app.config["MY_URL"] + "/api/v1/stats")
   client.close()
 
+def get_time_since_launch(instance):
+  time_running = datetime.datetime.now - dateutil.parser.parse(instance.launch_time)
+  _minutes, seconds = divmod(time_running.days * 86400 + c.seconds, 60)
+  hours, minutes = divmod(_minutes, 60)
+  return hours, minutes, seconds
+
 # warning: action is not validated for valid state transition
 def action(instance, action):
   iid = instance.id
@@ -76,8 +84,11 @@ def action(instance, action):
       conn.start_instances([iid])
       return True
     elif action == ACTION_STOP:
-      stop_instance(instance)
       #conn.stop_instances([iid])
       return True
   return False
+
+@celery.task
+def do_stop(instance):
+  stop_instance(instance)
   

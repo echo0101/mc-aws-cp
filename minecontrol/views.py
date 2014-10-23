@@ -41,6 +41,7 @@ def manage():
         "label": i.tags['Name'],
         "state": i.state,
         "ip": i.ip_address,
+        "uptime": aws.get_time_running(i) if i.state != "stopped" else None,
         "highlight": i.id == request.args.get('iid'),
         "actions": aws.STATE_TRANSITIONS[i.state]
         })
