@@ -1,0 +1,28 @@
+{% macro render_field_with_errors(field, boolean=False) %}
+  {% if field.errors %}
+  <div class="has-error">
+  {% endif %}
+  {% if boolean %}
+  <div class="radio">
+  {% else %}
+  <div class="form-group">
+  {% endif %}
+    {% if boolean %}
+     <label class="checkbox">
+     {{ field()|safe }}{{ field.label.text }}
+     </label>
+    {% else %}
+    {{ field.label }} {{ field(class="form-control")|safe }}
+    {% endif %}
+    {% for error in field.errors %}
+      <span class="help-block">{{ error }}</span>
+    {% endfor %}
+  </div>
+  {% if field.errors %}
+  </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_field(field) %}
+  {{ field(**kwargs)|safe }}
+{% endmacro %}

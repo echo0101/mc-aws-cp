@@ -6,7 +6,7 @@
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <div class="radio{% if form.confirm.errors %} has-error{% endif %}">
     <label class="checkbox">
-      {{ form.confirm }} {{ form.confirm.label }}
+      {{ form.confirm }} {{ form.confirm.label.text }}
     </label>
       {% if form.confirm.errors %}
       {% for error in form.confirm.errors %}<span class="help-block">{{ error }}</span>{% endfor %}
