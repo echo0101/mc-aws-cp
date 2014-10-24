@@ -4,9 +4,9 @@ import boto.ec2
 from paramiko.client import SSHClient
 import datetime
 import dateutil.parser
-from celery.task.control import revoke
 
-from minecontrol import app, celery
+from minecontrol import app
+from mycelery import celery
 
 cache = SimpleCache()
 conn = None
@@ -15,7 +15,7 @@ EC2_TAG_SHUTDOWN_JOB="shutdownJob"
 
 ACTION_START="Start"
 ACTION_STOP="Stop"
-ACTION_STOP_CANCEL="Cancel Shutdown"
+ACTION_STOP_CANCEL="CancelShutdown"
 
 STATE_TRANSITIONS = {
     "pending": [],
@@ -92,7 +92,8 @@ def action(instance, action):
       time_to_shutdown = 50 - minutes # shutdown 10 minutes before the hours is up
       if time_to_shutdown < 0:
         time_to_shutdown = 0
-      res = do_stop.apply_async((instance),countdown=time_to_shutdown*60) # minutes to seconds
+      app.logger.info("Sched shutdown of inst %s in %d minutes" % (iid, time_to_shutdown))
+      res = do_stop.apply_async((instance,),countdown=time_to_shutdown*60) # minutes to seconds
       instance.add_tag(EC2_TAG_SHUTDOWN_JOB, res.id)
       return True
     elif action == ACTION_STOP_CANCEL: 
@@ -100,13 +101,13 @@ def action(instance, action):
         task_id = instance.tags[EC2_TAG_SHUTDOWN_JOB]
       except KeyError:
         return False
-      revoke(task_id, terminate=True)
+      celery.control.revoke(task_id, terminate=True)
+      instance.remove_tag(EC2_TAG_SHUTDOWN_JOB)
       return True
 
   return False
-
+  
 @celery.task
 def do_stop(instance):
   stop_instance(instance)
   instance.remove_tag(EC2_TAG_SHUTDOWN_JOB)
-  

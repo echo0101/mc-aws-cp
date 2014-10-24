@@ -2,19 +2,6 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.security import Security, SQLAlchemyUserDatastore
-from celery import Celery
-
-def make_celery(app):
-  celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
-  celery.conf.update(app.config)
-  TaskBase = celery.Task
-  class ContextTask(TaskBase):
-    abstract = True
-    def __call__(self, *args, **kwargs):
-      with app.app_context():
-        return TaskBase.__call__(self, *args, **kwargs)
-  celery.Task = ContextTask
-  return celery
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
@@ -29,9 +16,6 @@ app.config['MY_URL'] = 'http://localhost'
 # celery config
 app.config['CELERY_BROKER_URL']='redis://localhost:6379'
 app.config['CELERY_RESULT_BACKEND']='redis://localhost:6379'
-
-# Setup Celery
-celery = make_celery(app)
 
 app.config['SECURITY_CHANGEABLE'] = True
 app.config['SECURITY_SEND_PASSWORD_CHANGE_EMAIL'] = False
@@ -71,3 +55,4 @@ def dbinit():
     db.session.commit()
 
 import minecontrol.views
+import mycelery

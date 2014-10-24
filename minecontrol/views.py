@@ -39,7 +39,7 @@ def manage():
     state = i.state
     allowed_actions = aws.STATE_TRANSITIONS[i.state]
     if aws.EC2_TAG_SHUTDOWN_JOB in i.tags:
-      allowed_actions.append(aws.ACTION_STOP_CANCEL)
+      allowed_actions = [aws.ACTION_STOP_CANCEL]
       state += " (stop scheduled)"
     inst_summary.append({
         "iid": i.id,
@@ -53,6 +53,10 @@ def manage():
 
   return render_template("manage.html", instances=inst_summary) 
 
+@app.route('/foo')
+def make_error():
+  foo=foo
+
 @app.route('/manage/<iid>', methods=['POST'])
 @login_required
 @roles_accepted('member','admin')
@@ -60,7 +64,8 @@ def manage_instance(iid):
   action = request.form.get('action')
   instance = aws.get_instance(iid)
   if instance:
-    if action in aws.STATE_TRANSITIONS[instance.state]:
+    if action in aws.STATE_TRANSITIONS[instance.state] or \
+        (aws.EC2_TAG_SHUTDOWN_JOB in instance.tags and aws.ACTION_STOP_CANCEL == action):
       if aws.action(instance, action):
         db.session.add(CommandRecord(action=action,user=current_user))
         db.session.commit()
