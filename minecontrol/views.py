@@ -22,7 +22,6 @@ import aws
 s = None
 
 @app.route('/')
-@login_required
 def index():
   return render_template("welcome.html")
 

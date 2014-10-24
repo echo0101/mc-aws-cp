@@ -1,1 +1,39 @@
 {% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1>Welcome to Minecontrol</h1> 
+
+  <p class="lead">Minecontrol is a community Minecraft server manager.</p>
+  <p>This tool allows you to start and stop* server instances at the push of a button.</p>
+
+  {% if current_user.has_role("member") or current_user.has_role("admin") %}
+  <p><a class="btn btn-lg btn-primary" href="{{url_for("manage")}}">Manage Servers</a></p>
+  {% endif %}
+</div>
+
+<p>Currently we are using t2.small in US West Oregon (us-west-2) region. The cost for running this server is $0.026 per instance-hour. Additionally we are billed for EBS usage at $0.10 per GB-month in this region. This may grow as our server grows but I would expect no more than $0.20 per month. On top of this to help cover the cost of running this sever, I’ll add $2.00 per month.</p>
+
+<p>An example bill could be: 
+<ul>
+  <li>Server running for 32 hours - $0.42</li>
+  <li>EBS storage fees 1.5 GB - $0.15</li>
+  <li>Management server - $2.00</li>
+  <li><b>Total: $2.57</b></li>
+</ul>
+</p>
+
+<p>We’ll split the bill based on server utilization. So suppose 3 players are sharing a server. If Player 1 plays 10 hours, Player 2 plays 22 hours and Player 3 plays 20 hours…
+
+<p>Total player hours = 10+22+20 = 52 player hours</p>
+
+<ul>
+  <li>Player 1 split is 10/52, so this person would owe $0.49</li>
+  <li>Player 2 split is 22/52, so this person would owe $1.09</li>
+  <li>Player 3 split is 20/52, so this person would owe $0.99</li>
+</ul>
+
+Player stats are extracted from the server on server shutdown. 
+</p>
+
+<p>* Note: the server may schedule itself for shutdown if there is more than 10 minutes before the end of an instance-hour. (This is because amazon does not prorate for partial instance-hours consumed)</p>
+{% endblock %}
