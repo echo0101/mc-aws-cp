@@ -34,7 +34,7 @@ app.config.from_pyfile('../my.cfg', silent=True)
 
 if not app.debug:
     import logging
-    from themodule import RotatingFileHandler 
+    from logging.handlers import RotatingFileHandler 
     file_handler = RotatingFileHandler('minecontrol.log',maxBytes=30000000)
     file_handler.setLevel(logging.WARNING)
     app.logger.addHandler(file_handler)
