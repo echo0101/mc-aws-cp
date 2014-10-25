@@ -32,6 +32,13 @@ app.config.from_pyfile('../my.cfg', silent=True)
 # For AWS Control ~/.boto or /etc/boto.cfg must exist.
 # see https://aws.amazon.com/articles/Python/3998
 
+if not app.debug:
+    import logging
+    from themodule import RotatingFileHandler 
+    file_handler = RotatingFileHandler('minecontrol.log',maxBytes=30000000)
+    file_handler.setLevel(logging.WARNING)
+    app.logger.addHandler(file_handler)
+
 import minecontrol.models
 
 # Setup Flask-Security
