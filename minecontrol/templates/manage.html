@@ -7,10 +7,10 @@
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th>Instance ID</th>
+      <th class="hidden-xs">Instance ID</th>
       <th>Label</th>
       <th>State</th>
-      <th>IP</th>
+      <th class="hidden-xs">IP</th>
       <th>Info</th>
       <th>Actions</th>
     </tr>
@@ -18,14 +18,16 @@
   <tbody>
     {% for instance in instances %}
     <tr {% if instance.highlight %}class="info"{% endif %}>
-      <td>{{ instance.iid }}</td>
+      <td class="hidden-xs">{{ instance.iid }}</td>
       <td>{{ instance.label }}</td>
       <td>{{ instance.state }}</td>
-      <td>{{ instance.ip }} </td>
+      <td class="hidden-xs">{{ instance.ip }} </td>
       <td>
         {% if instance.uptime %}
-        Uptime: {{ instance.uptime[0] }} hour(s) and {{ instance.uptime[1] }} minute(s)
+        <p>Uptime: {{ instance.uptime[0] }} hour(s) and {{ instance.uptime[1] }} minute(s)</p>
         {% endif %}
+        <p class="visible-xs">IID: {{ instance.iid }}</p>
+        <p class="visible-xs">IP: {{ instance.ip }}</p>
       </td>
       <td>
         {% for action in instance.actions %}
