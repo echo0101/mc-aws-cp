@@ -93,7 +93,7 @@ def action(instance, action):
       if time_to_shutdown < 0:
         time_to_shutdown = 0
       app.logger.info("Sched shutdown of inst %s in %d minutes" % (iid, time_to_shutdown))
-      res = do_stop.apply_async((instance,),countdown=time_to_shutdown*60) # minutes to seconds
+      res = do_stop.apply_async((iid,),countdown=time_to_shutdown*60) # minutes to seconds
       instance.add_tag(EC2_TAG_SHUTDOWN_JOB, res.id)
       return True
     elif action == ACTION_STOP_CANCEL: 
@@ -108,6 +108,7 @@ def action(instance, action):
   return False
   
 @celery.task
-def do_stop(instance):
+def do_stop(iid):
+  instance = get_instance(iid)
   stop_instance(instance)
   instance.remove_tag(EC2_TAG_SHUTDOWN_JOB)

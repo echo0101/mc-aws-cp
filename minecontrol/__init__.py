@@ -13,6 +13,8 @@ app.config['API_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/minecontrol.db'
 app.config['MY_URL'] = 'http://localhost'
 
+app.config['APP_LOG'] = 'minecontrol.log'
+
 # celery config
 app.config['CELERY_BROKER_URL']='redis://localhost:6379'
 app.config['CELERY_RESULT_BACKEND']='redis://localhost:6379'
@@ -35,7 +37,7 @@ app.config.from_pyfile('../my.cfg', silent=True)
 if not app.debug:
     import logging
     from logging.handlers import RotatingFileHandler 
-    file_handler = RotatingFileHandler('minecontrol.log',maxBytes=30000000)
+    file_handler = RotatingFileHandler(app.config['APP_LOG'],maxBytes=30000000)
     file_handler.setLevel(logging.WARNING)
     app.logger.addHandler(file_handler)
 
