@@ -18,6 +18,9 @@ app.config['APP_LOG'] = 'minecontrol.log'
 # celery config
 app.config['CELERY_BROKER_URL']='redis://localhost:6379'
 app.config['CELERY_RESULT_BACKEND']='redis://localhost:6379'
+app.config['CELERY_TASK_SERIALIZER'] = 'json'
+app.config['CELERY_RESULT_SERIALIZER'] = 'json'
+app.config['CELERY_ACCEPT_CONTENT'] = ['json']
 
 app.config['SECURITY_CHANGEABLE'] = True
 app.config['SECURITY_SEND_PASSWORD_CHANGE_EMAIL'] = False
