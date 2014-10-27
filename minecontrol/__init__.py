@@ -53,7 +53,7 @@ if not app.debug:
     from logging.handlers import SMTPHandler
     mail_handler = SMTPHandler('127.0.0.1',
                                app.config['SERVER_EMAIL_ADDRESS'],
-                               app.config['ADMINS'], 'minecontrol failure')
+                               app.config['ADMINS'], '[minecontrol] failure')
     mail_handler.setLevel(logging.WARNING)
     app.logger.addHandler(mail_handler)
 
