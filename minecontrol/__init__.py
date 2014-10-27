@@ -42,7 +42,7 @@ if not app.debug:
     import logging
     from logging.handlers import RotatingFileHandler 
     file_handler = RotatingFileHandler(app.config['APP_LOG'],maxBytes=30000000)
-    file_handler.setLevel(logging.WARNING)
+    file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
 
 import minecontrol.models

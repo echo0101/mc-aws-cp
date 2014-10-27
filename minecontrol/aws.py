@@ -73,6 +73,10 @@ def stop_instance(instance):
   client.load_system_host_keys()
   client.connect(instance.ip_address, username="ubuntu")
   stdin, stdout, stderr = client.exec_command('%s "%s" "%s"' % (stop_script_location, app.config["API_KEY"], app.config["MY_URL"] + "/api/v1/stats"))
+  for s in [stdin, stdout, stderr]:
+    app.logger.info(s.read())
+  except IOException:
+    pass
   client.close()
 
 def get_time_since_launch(instance):
@@ -110,6 +114,7 @@ def action(instance, action):
   
 @celery.task
 def do_stop(iid):
+  app.logger.info("Shutting down: %s" % iid)
   instance = get_instance(iid)
   stop_instance(instance)
   instance.remove_tag(EC2_TAG_SHUTDOWN_JOB)
