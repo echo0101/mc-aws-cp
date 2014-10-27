@@ -76,7 +76,7 @@ def stop_instance(instance):
   try:
     for s in [stdin, stdout, stderr]:
       app.logger.info(s.read())
-  except IOException:
+  except IOError:
     pass
   client.close()
 
