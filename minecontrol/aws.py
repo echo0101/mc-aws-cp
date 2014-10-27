@@ -1,6 +1,7 @@
 import itertools
 from werkzeug.contrib.cache import SimpleCache
 import boto.ec2
+import paramiko
 from paramiko.client import SSHClient
 import datetime
 import dateutil.parser
@@ -28,7 +29,7 @@ STATE_TRANSITIONS = {
 
 def _do_conn():
   global conn
-  conn = boto.ec2.connect_to_region("us-west-2")
+  conn = boto.ec2.connect_to_region(app.config['AWS_REGION'])
 
 def get_instance(iid):
   global conn
@@ -68,6 +69,7 @@ def stop_instance(instance):
   except KeyError:
     stop_script_location = '~/shutdown.sh' 
   client = SSHClient()
+  client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
   client.load_system_host_keys()
   client.connect(instance.ip_address, username="ubuntu")
   stdin, stdout, stderr = client.exec_command(stop_script_location + 

@@ -14,6 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/minecontrol.db'
 app.config['MY_URL'] = 'http://localhost'
 
 app.config['APP_LOG'] = 'minecontrol.log'
+app.config['AWS_REGION'] ="us-west-2" 
 
 # celery config
 app.config['CELERY_BROKER_URL']='redis://localhost:6379'
