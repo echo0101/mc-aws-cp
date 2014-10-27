@@ -73,8 +73,9 @@ def stop_instance(instance):
   client.load_system_host_keys()
   client.connect(instance.ip_address, username="ubuntu")
   stdin, stdout, stderr = client.exec_command('%s "%s" "%s"' % (stop_script_location, app.config["API_KEY"], app.config["MY_URL"] + "/api/v1/stats"))
-  for s in [stdin, stdout, stderr]:
-    app.logger.info(s.read())
+  try:
+    for s in [stdin, stdout, stderr]:
+      app.logger.info(s.read())
   except IOException:
     pass
   client.close()
