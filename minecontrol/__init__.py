@@ -31,6 +31,8 @@ app.config['SECURITY_PASSWORD_HASH'] = 'sha512_crypt'
 app.config['SECURITY_PASSWORD_SALT'] = '2FZcxCHezFY2j0QVC6sq'
 
 app.config['DEFAULT_ADMIN_PASS'] = 'changeme'
+app.config['SERVER_EMAIL_ADDRESS'] = 'minecontrol@minecontrol.us'
+app.config['ADMINS'] = []
 
 # load local configuration
 app.config.from_pyfile('../my.cfg', silent=True)
@@ -41,9 +43,19 @@ app.config.from_pyfile('../my.cfg', silent=True)
 if not app.debug:
     import logging
     from logging.handlers import RotatingFileHandler 
+
+    # log file
     file_handler = RotatingFileHandler(app.config['APP_LOG'],maxBytes=30000000)
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
+    
+    # email
+    from logging.handlers import SMTPHandler
+    mail_handler = SMTPHandler('127.0.0.1',
+                               app.config['SERVER_EMAIL_ADDRESS'],
+                               app.config['ADMINS'], 'minecontrol failure')
+    mail_handler.setLevel(logging.WARNING)
+    app.logger.addHandler(mail_handler)
 
 import minecontrol.models
 
