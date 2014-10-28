@@ -1,10 +1,13 @@
 import tweepy
 from minecontrol import app,db
 from flask import redirect,url_for,request,session,abort,flash
+from flask.ext.security import login_required, roles_accepted
 
 from models import OAuthToken,SERVICE_TWITTER
 
 @app.route("/setup/twitter/clear")
+@login_required
+@roles_accepted("admin")
 def remove_twitter():
   access_token = db.session.query(OAuthToken).filter(OAuthToken.service==SERVICE_TWITTER).first()
   if access_token:
@@ -17,6 +20,8 @@ def remove_twitter():
   
 
 @app.route("/setup/twitter")
+@login_required
+@roles_accepted("admin")
 def setup_twitter():
   auth = tweepy.OAuthHandler(
       app.config['TWITTER_TOKEN'], 
@@ -34,6 +39,8 @@ def setup_twitter():
   return redirect(redirect_url)
 
 @app.route("/api/v1/twitter/oauth")
+@login_required
+@roles_accepted("admin")
 def twitter_handle_oauth():
   verifier = request.args.get('oauth_verifier', '')
   auth = tweepy.OAuthHandler(
