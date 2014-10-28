@@ -252,6 +252,8 @@ def api_stats():
 
   db.session.commit()
 
+  if bad > 0:
+    app.logger.error("Stats api rejected %d of % records." % (bad, bad+good))
   app.logger.info("Stats api processed %d records. (Rejected %d bad records)" % (good, bad))
 
   return "{\"status\":\"ok\"}"
