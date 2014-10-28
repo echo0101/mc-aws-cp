@@ -4,6 +4,8 @@ from minecontrol import db
 from aws import ACTION_START, ACTION_STOP, ACTION_STOP_CANCEL
 import datetime
 
+SERVICE_TWITTER="twitter"
+
 roles_users = db.Table('roles_users',
         db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
         db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
@@ -51,4 +53,10 @@ class BillRecord(db.Model):
   costCents = db.Column(db.Integer)
   lastRecords = db.relationship('UsageRecord', backref='bill')
   notes = db.Column(db.Text)
+
+class OAuthToken(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  service = db.Column(db.Enum(SERVICE_TWITTER),unique=True)
+  key = db.Column(db.String(255))
+  secret = db.Column(db.String(255))
 
