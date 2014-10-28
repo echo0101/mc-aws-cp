@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>View Usage Record</h1>
+
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Timestamp</th>
+      <th>UUID</th>
+      <th>ticks</th>
+    </tr>
+  </thead>
+  {% for record in records %}
+  <tr>
+    <td>{{ record.id }}</td>
+    <td>{{ record.timestamp }}</td>
+    <td>{{ record.minecraft_account_uuid }}</td>
+    <td>{{ record.ticks_played }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

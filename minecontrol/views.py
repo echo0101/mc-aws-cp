@@ -176,7 +176,7 @@ def audit_commands():
 @login_required
 @roles_accepted('member','admin')
 def audit_usage():
-  pass
+  return render_template("usage.html",records=db.session.query(UsageRecord).all())
 
 @app.route('/bills')
 @login_required
