@@ -88,10 +88,12 @@ def get_time_since_launch(instance):
 
 # warning: action is not validated for valid state transition
 def action(instance, action):
+  from tweet import tweet_msg
   iid = instance.id
   if "Instance:"+iid in map(str,get_instance_list()):
     if action == ACTION_START:
       conn.start_instances([iid])
+      tweet_msg("Server %s has been started. Join now!" % iid)
       return True
     elif action == ACTION_STOP:
       hours, minutes, seconds = get_time_since_launch(instance)
@@ -100,6 +102,7 @@ def action(instance, action):
         time_to_shutdown = 0
       app.logger.info("Sched shutdown of inst %s in %d minutes" % (iid, time_to_shutdown))
       res = do_stop.apply_async((iid,),countdown=time_to_shutdown*60) # minutes to seconds
+      tweet_msg("Server %s is scheduled for shutdown in %d minutes" % (iid, time_to_shutdown))
       instance.add_tag(EC2_TAG_SHUTDOWN_JOB, res.id)
       return True
     elif action == ACTION_STOP_CANCEL: 

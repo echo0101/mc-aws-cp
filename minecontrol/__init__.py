@@ -11,7 +11,9 @@ CsrfProtect(app)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['API_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/minecontrol.db'
-app.config['MY_URL'] = 'http://localhost'
+app.config['MY_URL'] = 'http://localhost:5000'
+
+#set TWITTER_TOKEN and TWITTER_SECRET for tweet support
 
 app.config['APP_LOG'] = 'minecontrol.log'
 app.config['AWS_REGION'] ="us-west-2" 

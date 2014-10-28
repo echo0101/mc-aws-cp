@@ -19,6 +19,9 @@ import mojang
 
 import aws
 
+# more views
+import tweet
+
 s = None
 
 @app.route('/')

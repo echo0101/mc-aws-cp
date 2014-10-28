@@ -26,4 +26,5 @@ python-dateutil==2.2
 pytz==2014.7
 redis==2.10.3
 six==1.8.0
+tweepy==2.3.0
 wsgiref==0.1.2
