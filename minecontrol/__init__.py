@@ -9,7 +9,7 @@ cache = SimpleCache()
 app = Flask(__name__)
 db = SQLAlchemy(app)
 
-CsrfProtect(app)
+csrf = CsrfProtect(app)
 
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['API_KEY'] = 'super-secret'

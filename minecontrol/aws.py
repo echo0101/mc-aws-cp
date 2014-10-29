@@ -114,7 +114,6 @@ def action(instance, action):
       celery.control.revoke(task_id, terminate=True)
       instance.remove_tag(EC2_TAG_SHUTDOWN_JOB)
       return True
-
   return False
   
 @celery.task

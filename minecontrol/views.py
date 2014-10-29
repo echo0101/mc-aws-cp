@@ -11,7 +11,7 @@ from itsdangerous import JSONWebSignatureSerializer
 from wtforms.ext.sqlalchemy.orm import model_form
 from wtforms import Form
 
-from minecontrol import app, db, user_datastore
+from minecontrol import app, db, user_datastore, csrf
 from forms import ConfirmForm
 from models import * 
 from util import *
@@ -233,6 +233,7 @@ def delete_bill(bid):
   return render_template("confirm.html", form=form, back="bills",
       prompt="You are about to remove a bill record for %s." % str(bill.endDate)) 
 
+@csrf.exempt
 @app.route('/api/v1/stats', methods=['POST'])
 def api_stats():
   global s
