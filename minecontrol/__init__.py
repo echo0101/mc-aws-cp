@@ -2,6 +2,9 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.security import Security, SQLAlchemyUserDatastore
+from werkzeug.contrib.cache import SimpleCache
+
+cache = SimpleCache()
 
 app = Flask(__name__)
 db = SQLAlchemy(app)

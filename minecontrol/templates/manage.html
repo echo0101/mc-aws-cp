@@ -38,6 +38,19 @@
     {% endfor %}
   </tbody>
 </table>
+{% if twitter_user %}
+<div id="wrap_follow" class="row">
+  <div class="col-lg-4 col-md-3 col-sm-2 hidden-xs"></div>
+  <div class="col-lg-4 col-md-6 col-sm-8 col-xs-12 text-center">
+    <div class="well">
+      <p class="lead">Get notified when a server starts up! </p>
+      <a href="https://twitter.com/{{ twitter_user }}" class="twitter-follow-button" data-size="large" data-show-count="false">Follow @{{ twitter_user}}</a>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-3 col-sm-2 hidden-xs"></div>
+</div>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+{% endif %}
 {% endblock %}
 {% block after_scripts %}
 <script>

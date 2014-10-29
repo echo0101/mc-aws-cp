@@ -1,5 +1,5 @@
 import tweepy
-from minecontrol import app,db
+from minecontrol import app,db,cache
 from flask import redirect,url_for,request,session,abort,flash
 from flask.ext.security import login_required, roles_accepted
 
@@ -62,6 +62,21 @@ def twitter_handle_oauth():
   db.session.commit()
   flash("Successfully Setup Twitter")
   return redirect(url_for("index"))
+
+def get_screen_name():
+  retval = cache.get('twitter_user')
+
+  if not retval:
+    access_token = db.session.query(OAuthToken).filter(OAuthToken.service==SERVICE_TWITTER).first()
+    if access_token:
+      auth = tweepy.OAuthHandler(
+          app.config['TWITTER_TOKEN'], 
+          app.config['TWITTER_SECRET'])
+      auth.set_access_token(access_token.key, access_token.secret)
+      api = tweepy.API(auth)
+      retval = api.me().screen_name
+      cache.set('twitter_user', retval, timeout=43200) # 30 days (in minutes)
+  return retval
 
 def tweet_msg(m):
   access_token = db.session.query(OAuthToken).filter(OAuthToken.service==SERVICE_TWITTER).first()

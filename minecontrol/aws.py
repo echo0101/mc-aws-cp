@@ -1,15 +1,13 @@
 import itertools
-from werkzeug.contrib.cache import SimpleCache
 import boto.ec2
 import paramiko
 from paramiko.client import SSHClient
 import datetime
 import dateutil.parser
 
-from minecontrol import app
+from minecontrol import app, cache
 from mycelery import celery
 
-cache = SimpleCache()
 conn = None
 
 EC2_TAG_SHUTDOWN_JOB="shutdownJob"
@@ -42,7 +40,7 @@ def get_instance(iid):
     return instance 
 
 def get_instance_list(force_update=False): 
-  global cache,conn
+  global conn
 
   # return if cache-hit
   if not force_update and cache.get('instances'):

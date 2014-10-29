@@ -53,7 +53,8 @@ def manage():
         "actions": allowed_actions 
         })
 
-  return render_template("manage.html", instances=inst_summary) 
+  return render_template("manage.html", instances=inst_summary, 
+      twitter_user=tweet.get_screen_name()) 
 
 @app.route('/foo')
 def make_error():
