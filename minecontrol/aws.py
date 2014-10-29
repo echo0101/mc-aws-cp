@@ -100,10 +100,12 @@ def action(instance, action):
       hours, minutes, seconds = get_time_since_launch(instance)
       time_to_shutdown = 50 - minutes # shutdown 10 minutes before the hours is up
       if time_to_shutdown < 0:
+        tweet_msg("%s is shutting down now." % (inst_name))
         time_to_shutdown = 0
+      else:
+        tweet_msg("%s is scheduled for shutdown in %d minutes." % (inst_name, time_to_shutdown))
       app.logger.info("Sched shutdown of %s (%s) in %d minutes" % (inst_name, iid, time_to_shutdown))
       res = do_stop.apply_async((iid,),countdown=time_to_shutdown*60) # minutes to seconds
-      tweet_msg("%s is scheduled for shutdown in %d minutes." % (inst_name, time_to_shutdown))
       instance.add_tag(EC2_TAG_SHUTDOWN_JOB, res.id)
       return True
     elif action == ACTION_STOP_CANCEL: 
