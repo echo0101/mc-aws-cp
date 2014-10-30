@@ -1,10 +1,10 @@
 #!/usr/bin/python
 import sys,os
-import urllib,httplib
+import urllib,urllib2
 import json
 from itsdangerous import JSONWebSignatureSerializer
 
-STATS_LOCATION = "/srv/cloudcraft/stats"
+STATS_LOCATION = "/srv/cloudcraft/cloudcraft/stats"
 
 # parms
 # 1- api_key
@@ -26,17 +26,25 @@ def upload(api_key, target_url):
       except ValueError:
         pass
   if len(player_stats) > 0:
-    conn = httplib.HTTPConnection(target_url) 
-    headers = {"Content-type": "application/json"}
-    conn.request("POST", json.dumps({"data":player_stats}), None, headers)
-    response = conn.getresponse()
-    data = response.read()
+    data = json.dumps({"data":s.dumps(player_stats)})
+    headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+       'Content-type': 'application/json',
+       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+       'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+       'Accept-Encoding': 'none',
+       'Accept-Language': 'en-US,en;q=0.8',
+       'Connection': 'keep-alive'}
+    request = urllib2.Request(target_url, data, headers=headers)
     try:
-      if json.loads(data)["status"] == "ok":
-        print "Success"
-    except ValueError:
-      pass
-    print "Failed"
+      response = urllib2.urlopen(request)
+      data = response.read()
+      try:
+        if json.loads(data)["status"] == "ok":
+          print "Success"
+      except ValueError:
+        pass
+    except urllib2.HTTPError as e:
+      print e.fp.read()
 
 def usage():
   print "upload_stats.py [api_key] [target_url]"
@@ -45,4 +53,3 @@ if len(sys.argv) != 3:
   usage()
 else:
   upload(sys.argv[1], sys.argv[2])
-
