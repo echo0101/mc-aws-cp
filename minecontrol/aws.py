@@ -11,6 +11,7 @@ from mycelery import celery
 conn = None
 
 EC2_TAG_SHUTDOWN_JOB="shutdownJob"
+EC2_TAG_ALLOW_CONTROL="mcEnabled"
 
 ACTION_START="Start"
 ACTION_STOP="Stop"
@@ -51,9 +52,9 @@ def get_instance_list(force_update=False):
   if None == conn:
     _do_conn()
 
-  # get all instances that are tagged with aws-mc-cp-enabled
+  # get all instances that are tagged with EC2_TAG_ALLOW_CONTROL 
   for i in conn.get_only_instances():
-    if 'aws-mc-cp-enabled' in i.tags:
+    if EC2_TAG_ALLOW_CONTROL in i.tags:
       retval.append(i)
 
   # cache the result
