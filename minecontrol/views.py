@@ -197,8 +197,32 @@ def _process_bill(bid=None):
   if request.method == 'POST' and form.validate():
     bill.endDate = form.data['endDate']
     bill.costCents = form.data['costCents']
-    bill.lastRecords = form.data['lastRecords']
     bill.notes = form.data['notes']
+
+    # if adding generate related records
+
+    # cases: 
+    # 1. user has not been billed before, and has not played (current=Null, last=Null)
+    # 2. user has not been billed before, played since last (current=Record, last=Null)
+    # 3. user has been billed before, played sicne last (current=Record, last=Record)
+    # 4. user has been billed before but has not played since last (current=Null, last=Record)
+    if None==bid:
+      usage_records = []
+      user_bills = []
+      members=db.session.query(User).filter(User.roles.contains(Role.getMemberRole())).all()
+      for member in members:
+        app.logger.info("member: %s", member)
+        last_usage, ticks_played = member.sinceLastBill()
+
+        # create record if there has been account activity
+        if last_usage:
+          app.logger.info("appending usage record")
+          user_bills.append(UserBill(ticks_played_period=ticks_played,user=member))
+          usage_records.append(last_usage)
+      bill.lastRecords = usage_records
+      bill.billsGenerated = user_bills
+
+      app.logger.info("done.")
 
     flash("Bill added." if not bid else "Bill updated.")
     db.session.add(bill)

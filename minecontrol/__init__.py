@@ -78,8 +78,8 @@ def dbinit():
 
   if db.session.query(models.User).count() == 0:
     admin_user = user_datastore.create_user(email='admin', password=app.config['DEFAULT_ADMIN_PASS'])
-    user_datastore.create_role(name='member', description='Member of this server')
-    admin_group = user_datastore.create_role(name='admin', \
+    user_datastore.create_role(name=models.MEMBER_ROLE, description='Member of this server')
+    admin_group = user_datastore.create_role(name=models.ADMIN_ROLE, \
         description='Administrator of this server')
     user_datastore = user_datastore.add_role_to_user(admin_user, admin_group)
     db.session.commit()
