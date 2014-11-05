@@ -48,6 +48,14 @@ class User(db.Model, UserMixin):
   def __str__(self):
     return self.email
 
+  def timePlayedSinceLast(self):
+    usage, ticks = self.sinceLastBill()
+    return datetime.timedelta(seconds=ticks)
+
+  def partSinceLast(self):
+    members=db.session.query(User).filter(User.roles.contains(Role.getMemberRole())).all()
+    return float(self.sinceLastBill()[1])/float(sum(member.sinceLastBill()[1] for member in members))
+
   # get current usage record, ticks played
   def sinceLastBill(self):
     baseline_ticks = 0

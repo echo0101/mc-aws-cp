@@ -81,7 +81,7 @@ def manage_instance(iid):
 @login_required
 @roles_accepted('member','admin')
 def my_usage():
-  return render_template("my_usage.html", current_user=current_user, bills=db.session.query(BillRecord).all())
+  return render_template("my_usage.html", current_user=current_user)
 
 @app.route('/users')
 @login_required
@@ -176,6 +176,7 @@ def add_user():
 
   return render_template("user.html", form=form, action="Add") 
 
+# TODO: remove this
 @app.route('/manage/audit')
 @login_required
 @roles_accepted('audit','admin')
