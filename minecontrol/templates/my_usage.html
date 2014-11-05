@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>My Usage</h1>
+For {{ current_user }} <br/>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Split</th>
+      <th>Amount Due</th>
+      <th>Total Bill</th>
+      <th>Paid</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for bill in current_user.bills %}
+    <tr>
+      <td>{{ bill.bill.endDate }}</td>
+      <td>{{ "%d%%" % (100*bill.getPart()) }}</td>
+      <td>{{ "$%0.2f" % (bill.getCost()/100) }}</td>
+      <td>{{ "$%0.2f" % float(bill.bill.costCents)/100 }}</td>
+      <td>{{ bill.paid }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

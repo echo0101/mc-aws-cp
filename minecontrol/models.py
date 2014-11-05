@@ -95,9 +95,16 @@ class UsageRecord(db.Model):
 
 class UserBill(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  billrecord_id = db.Column(db.Integer, db.ForeignKey('bill.id'))
+  bill_id = db.Column(db.Integer, db.ForeignKey('bill.id'))
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
   ticks_played_period = db.Column(db.Integer)
+  paid = db.Column(db.Boolean())
+
+  def getCost(self):
+    return self.bill.costCents * self.getPart() 
+
+  def getPart(self):
+    return float(self.ticks_played_period) / float(self.bill.getTotalUsage())
 
   def __str__(self):
     return "Bill: %s - %d" % (self.user, self.ticks_played_period)
@@ -110,6 +117,9 @@ class BillRecord(db.Model):
   lastRecords = db.relationship('UsageRecord', backref='bill')
   billsGenerated = db.relationship('UserBill', backref='bill')
   notes = db.Column(db.Text)
+
+  def getTotalUsage(self):
+    return sum(bill.ticks_played_period for bill in self.billsGenerated)
 
 class OAuthToken(db.Model):
   id = db.Column(db.Integer, primary_key=True)

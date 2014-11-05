@@ -77,6 +77,12 @@ def manage_instance(iid):
       return redirect(url_for('manage', result="State change not allowed.", update=True, iid=iid))
   return "Action failed."
 
+@app.route('/usage')
+@login_required
+@roles_accepted('member','admin')
+def my_usage():
+  return render_template("my_usage.html", current_user=current_user, bills=db.session.query(BillRecord).all())
+
 @app.route('/users')
 @login_required
 @roles_accepted('admin')
