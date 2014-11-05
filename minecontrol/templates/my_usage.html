@@ -8,7 +8,6 @@ For {{ current_user }} <br/>
       <th>Date</th>
       <th>Split</th>
       <th>Amount Due</th>
-      <th>Total Bill</th>
       <th>Paid</th>
     </tr>
   </thead>
@@ -18,7 +17,6 @@ For {{ current_user }} <br/>
       <td>{{ bill.bill.endDate }}</td>
       <td>{{ "%d%%" % (100*bill.getPart()) }}</td>
       <td>{{ "$%0.2f" % (bill.getCost()/100) }}</td>
-      <td>{{ "$%0.2f" % float(bill.bill.costCents)/100 }}</td>
       <td>{{ bill.paid }}</td>
     </tr>
     {% endfor %}
