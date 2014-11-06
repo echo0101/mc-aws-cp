@@ -244,7 +244,13 @@ def _process_bill(bid=None):
 def add_bill():
   return _process_bill()
 
-@app.route('/bills/<bid>', methods=['GET','POST'])
+@app.route('/bills/<bid>')
+@login_required
+@roles_accepted('admin', 'member')
+def view_bill(bid):
+  return render_template("view_bill.html", bill=db.session.query(BillRecord).get(bid))
+
+@app.route('/bills/<bid>/edit', methods=['GET','POST'])
 @login_required
 @roles_accepted('admin')
 def edit_bill(bid):

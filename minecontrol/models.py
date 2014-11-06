@@ -111,8 +111,14 @@ class UserBill(db.Model):
   def getCost(self):
     return self.bill.costCents * self.getPart() 
 
+  def getCostDollars(self):
+    return float(self.getCost())/100
+
   def getPart(self):
     return float(self.ticks_played_period) / float(self.bill.getTotalUsage())
+
+  def timePlayed(self):
+    return datetime.timedelta(seconds=self.ticks_played_period/20)
 
   def __str__(self):
     return "Bill: %s - %d" % (self.user, self.ticks_played_period)
@@ -128,6 +134,9 @@ class BillRecord(db.Model):
 
   def getTotalUsage(self):
     return sum(bill.ticks_played_period for bill in self.billsGenerated)
+
+  def getCostDollars(self):
+    return float(self.costCents)/100
 
 class OAuthToken(db.Model):
   id = db.Column(db.Integer, primary_key=True)

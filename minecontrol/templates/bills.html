@@ -13,18 +13,20 @@
       <th>Actions</th>
     </tr>
   </thead>
-  {% for bill in bills %}
-  <tr>
-    <td>{{ bill.id }}</td>
-    <td>{{ bill.endDate }}</td>
-    <td>{{ "$%.2f" % (bill.costCents / 100) }}</td>
-    <td>{{ bill.lastRecords|map(attribute='name')|join(', ') }}</td>
-    <td>{{ bill.notes }}</td>
-    <td> 
-      {% if current_user.has_role("admin") %}<a href="{{ url_for('edit_bill', bid=bill.id) }}" class="btn btn-default">Edit</a>{% endif %}
-    </td>
-  </tr>
-  {% endfor %}
+  <tbody>
+    {% for bill in bills %}
+    <tr>
+      <td><a href="{{ url_for('view_bill', bid=bill.id) }}">{{ bill.id }}</a></td>
+      <td>{{ bill.endDate }}</td>
+      <td>{{ "$%.2f" % (bill.costCents / 100) }}</td>
+      <td>{{ bill.lastRecords|map(attribute='name')|join(', ') }}</td>
+      <td>{{ bill.notes }}</td>
+      <td> 
+        {% if current_user.has_role("admin") %}<a href="{{ url_for('edit_bill', bid=bill.id) }}" class="btn btn-default">Edit</a>{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
 {% if current_user.has_role("admin") %}<a href="{{ url_for('add_bill') }}" class="btn btn-default">Add</a>{% endif %}
 {% endblock %}

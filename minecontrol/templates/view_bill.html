@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>View Bill</h1>
+<b>Date:</b> {{ bill.endDate }} <br />
+<b>Amount:</b> ${{ "%0.2f" % bill.getCostDollars() }} <br />
+{% if bill.notes %}
+<b>Notes:</b> {{ bill.notes }} </br /> 
+{% endif %}
+<hr>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Split</th>
+      <th>Usage (hh:mm:ss)</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for ub in bill.billsGenerated %}
+<tr>
+  <td>{{ ub.user }}</td>
+  <td>{{ "%d" % (ub.getPart()*100) }}%</td>
+  <td>{{ ub.timePlayed() }}</td>  
+  <td>${{ "%0.2f" % ub.getCostDollars() }}</td>
+</tr>
+{% endfor %}
+{% endblock %}
