@@ -71,7 +71,7 @@ def stop_instance(instance):
   client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
   client.load_system_host_keys()
   client.connect(instance.ip_address, username="ubuntu")
-  stdin, stdout, stderr = client.exec_command('%s "%s" "%s"' % (stop_script_location, app.config["API_KEY"], app.config["MY_URL"] + "/api/v1/stats"))
+  stdin, stdout, stderr = client.exec_command('%s "%s" "%s" "%s"' % (stop_script_location, app.config["API_KEY"], app.config["MY_URL"] + "/api/v1/stats",instance.tags['Name']))
   try:
     for s in [stdin, stdout, stderr]:
       app.logger.info(s.read())
