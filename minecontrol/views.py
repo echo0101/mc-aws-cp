@@ -275,20 +275,24 @@ def delete_bill(bid):
 def api_stats():
   global s
 
+  if request.json['version'] != 2:
+    return "{\"status\":\"error\",\"message\":\"incompatible version\"}"
+
   if s == None:
     s = JSONWebSignatureSerializer(app.config['API_KEY'])
 
   good = 0
   bad = 0
-  records = s.loads(request.json['data'])
+  d = s.loads(request.json['data'])
 
-  for data in records:
+  for data in d['stats']:
     if not ('uuid' in data and 'ticks_played' in data):
       bad+=1
     else:
       record = UsageRecord( 
         minecraft_account_uuid=data['uuid'].replace("-",""), 
-        ticks_played=data['ticks_played'])
+        ticks_played=data['ticks_played'],
+        server=d['server'])
       db.session.add(record)
       good+=1
 

@@ -10,7 +10,7 @@ STATS_LOCATION = "/srv/cloudcraft/cloudcraft/stats"
 # 1- api_key
 # 2- target_url
 
-def upload(api_key, target_url):
+def upload(server, api_key, target_url):
   player_stats = []
   s = JSONWebSignatureSerializer(api_key)
   stats_files = os.listdir(STATS_LOCATION)
@@ -26,7 +26,8 @@ def upload(api_key, target_url):
       except ValueError:
         pass
   if len(player_stats) > 0:
-    data = json.dumps({"data":s.dumps(player_stats)})
+    d = {"server": server,"stats":player_stats}
+    data = json.dumps({"version":2,"data":s.dumps(d)})
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Content-type': 'application/json',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -47,9 +48,9 @@ def upload(api_key, target_url):
       print e.fp.read()
 
 def usage():
-  print "upload_stats.py [api_key] [target_url]"
+  print "upload_stats.py [api_key] [target_url] [server]"
 
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
   usage()
 else:
-  upload(sys.argv[1], sys.argv[2])
+  upload(sys.argv[1], sys.argv[2], sys.argv[3])

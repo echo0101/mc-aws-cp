@@ -97,6 +97,7 @@ class UsageRecord(db.Model):
   minecraft_account_uuid = db.Column(db.String(32))
   ticks_played = db.Column(db.Integer)
   billrecord_id = db.Column(db.Integer, db.ForeignKey('bill.id'))
+  server = db.Column(db.String(255))
 
   def __str__(self):
     return "Usage: %s - %d" % (self.minecraft_account_uuid, self.ticks_played)
