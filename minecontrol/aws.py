@@ -87,7 +87,7 @@ def get_time_since_launch(instance):
 
 # warning: action is not validated for valid state transition
 def action(instance, action):
-  from tweet import tweet_msg
+  from tweet import tweet_msg, tweet_start_msg
   iid = instance.id
   inst_name = instance.tags["Name"] or instance.id
   if "Instance:"+iid in map(str,get_instance_list()):
