@@ -92,8 +92,8 @@ def action(instance, action):
   inst_name = instance.tags["Name"] or instance.id
   if "Instance:"+iid in map(str,get_instance_list()):
     if action == ACTION_START:
-      conn.start_instances([iid])
-      tweet_msg("%s (%s) has been started. Join now!" % (inst_name, instance.ip_address))
+      started = conn.start_instances([iid])
+      tweet_msg("%s (%s) has been started. Join now!" % (inst_name, started[0].ip_address))
       return True
     elif action == ACTION_STOP:
       hours, minutes, seconds = get_time_since_launch(instance)
