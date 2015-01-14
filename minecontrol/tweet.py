@@ -91,13 +91,13 @@ def _tweet_msg(m):
 
 def tweet_start_msg(name):
  try:
-   _tweet_msg("%s has been started. Join now!", name)
+   _tweet_msg("%s has been started. Join now!" % name)
  except tweepy.TweepError:
    try:
-     _tweet_msg("%s has been started again. Join now!", name)
+     _tweet_msg("%s has been started again. Join now!" % name)
    except tweetpy.TweepError:
      try:
-       _tweet_msg("%s has been started once more. Join now!", name)
+       _tweet_msg("%s has been started once more. Join now!" % name)
      except tweetpy.TweepError, e:
        app.logger.warn("Twitter: Tweet failed for startup. %s", e)
 
