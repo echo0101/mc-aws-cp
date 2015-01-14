@@ -86,5 +86,8 @@ def tweet_msg(m):
         app.config['TWITTER_SECRET'])
     auth.set_access_token(access_token.key, access_token.secret)
     api = tweepy.API(auth)
-    api.update_status(m)
+    try:
+      api.update_status(m)
+    except tweepy.TweepError, e:
+      app.logger.warn('Twitter: Tweet failed. %s', e) 
 

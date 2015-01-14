@@ -93,16 +93,16 @@ def action(instance, action):
   if "Instance:"+iid in map(str,get_instance_list()):
     if action == ACTION_START:
       conn.start_instances([iid])
-      tweet_msg("%s has been started. Join now!" % inst_name)
+      tweet_msg("%s (%s) has been started. Join now!" % (inst_name, instance.ip_address))
       return True
     elif action == ACTION_STOP:
       hours, minutes, seconds = get_time_since_launch(instance)
       time_to_shutdown = 50 - minutes # shutdown 10 minutes before the hours is up
       if time_to_shutdown < 0:
-        tweet_msg("%s is shutting down now." % (inst_name))
+        tweet_msg("%s (%s) is shutting down now." % (inst_name, instance.ip_address))
         time_to_shutdown = 0
       else:
-        tweet_msg("%s is scheduled for shutdown in %d minutes." % (inst_name, time_to_shutdown))
+        tweet_msg("%s (%s) is scheduled for shutdown in %d minutes." % (inst_name, instance.ip_address, time_to_shutdown))
       app.logger.info("Sched shutdown of %s (%s) in %d minutes" % (inst_name, iid, time_to_shutdown))
       res = do_stop.apply_async((iid,),countdown=time_to_shutdown*60) # minutes to seconds
       instance.add_tag(EC2_TAG_SHUTDOWN_JOB, res.id)
