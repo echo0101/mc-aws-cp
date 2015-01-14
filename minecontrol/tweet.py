@@ -78,7 +78,8 @@ def get_screen_name():
       cache.set('twitter_user', retval, timeout=43200) # 30 days (in minutes)
   return retval
 
-def tweet_msg(m):
+
+def _tweet_msg(m):
   access_token = db.session.query(OAuthToken).filter(OAuthToken.service==SERVICE_TWITTER).first()
   if access_token:
     auth = tweepy.OAuthHandler(
@@ -86,8 +87,22 @@ def tweet_msg(m):
         app.config['TWITTER_SECRET'])
     auth.set_access_token(access_token.key, access_token.secret)
     api = tweepy.API(auth)
+    api.update_status(m)
+
+def tweet_start_msg(name):
+ try:
+   _tweet_msg("%s has been started. Join now!", name)
+ except tweepy.TweepError:
+   try:
+     _tweet_msg("%s has been started again. Join now!", name)
+   except tweetpy.TweepError:
+     try:
+       _tweet_msg("%s has been started once more. Join now!", name)
+     except tweetpy.TweepError, e:
+       app.logger.warn("Twitter: Tweet failed for startup. %s", e)
+
+def tweet_msg(m):
     try:
-      api.update_status(m)
+      _tweet_msg(m)
     except tweepy.TweepError, e:
       app.logger.warn('Twitter: Tweet failed. %s', e) 
-
